@@ -180,13 +180,13 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /map
+        Value: /scout_mini/map
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /map_updates
+        Value: /scout_mini/map_updates
       Use Timestamp: false
       Value: true
     - Class: rviz_common/Group
@@ -221,7 +221,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /scan_matched_points2
+            Value: /scout_mini/scan_matched_points2
           Use Fixed Frame: true
           Use rainbow: true
           Value: true

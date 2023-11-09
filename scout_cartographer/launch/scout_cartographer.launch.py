@@ -13,6 +13,7 @@ from launch.substitutions import ThisLaunchFileDir
 def generate_launch_description():
     # Specify the name of the package
     pkg_name = 'scout_cartographer'
+    namespace = 'scout_mini'
 
     pkg_scout_cartographer = get_package_share_directory(pkg_name)
     rviz_config_dir = os.path.join(get_package_share_directory(pkg_name),
@@ -53,6 +54,7 @@ def generate_launch_description():
             default_value=publish_period_sec,
             description='OccupancyGrid publishing period')
 
+    # Nodes
     occupancy_grid_cmd = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [ThisLaunchFileDir(), '/occupancy_grid.launch.py']
@@ -62,6 +64,7 @@ def generate_launch_description():
     )
 
     cartographer_node = Node(
+            namespace=namespace,
             package='cartographer_ros',
             executable='cartographer_node',
             name='cartographer_node',
@@ -70,20 +73,27 @@ def generate_launch_description():
             arguments=['-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename],
             remappings=[
-                ('/imu', '/scout_mini/imu'),
-                ('/scan', '/scout_mini/scan'),
-                ('/fix', '/scout_mini/gps')
+                ('/tf', '/scout_mini/tf'),
+                ('/tf_static', '/scout_mini/tf_static'),
+                ('/scout_mini/fix','/scout_mini/gps')
             ]
     )
 
     rviz2_node = Node(
+            namespace=namespace,
             package='rviz2',
             executable='rviz2',
             name='rviz2',
-            arguments=['-d', rviz_config_dir],
+            arguments=['-d', os.path.join(get_package_share_directory(pkg_name),
+                                   'rviz', 'scout_cartographer.rviz')],
             parameters=[{'use_sim_time': use_sim_time}],
             condition=IfCondition(use_rviz),
-            output='screen')
+            output='screen',
+            remappings=[
+                ('/tf', 'tf'),
+                ('/tf_static', 'tf_static')
+            ]
+    )
  
     ld = LaunchDescription()
     

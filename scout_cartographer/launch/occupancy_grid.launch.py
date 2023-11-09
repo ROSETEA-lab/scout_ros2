@@ -5,6 +5,8 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
+    namespace = 'scout_mini'
+
     # Arguments and parameters
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     resolution = LaunchConfiguration('resolution', default='0.05')
@@ -26,6 +28,7 @@ def generate_launch_description():
             description='Use simulation (Gazebo) clock if true')
 
     occupancy_grid_node = Node(
+            namespace=namespace,   
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',
             name='cartographer_occupancy_grid_node',
