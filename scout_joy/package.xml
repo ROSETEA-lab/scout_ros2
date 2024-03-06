@@ -3,10 +3,11 @@
 <package format="3">
   <name>scout_joy</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="luca.bascetta@polimi.it">bascetta</maintainer>
-  <license>TODO: License declaration</license>
-
+  <description>Scout mini joypad node</description>
+  <maintainer email="luca.bascetta@polimi.it">Luca Bascetta</maintainer>
+  <maintainer email="mattia.dutto@polito.it">Mattia Dutto</maintainer>
+  <license>Apache License 2.0</license>
+  
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
