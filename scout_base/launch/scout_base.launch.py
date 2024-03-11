@@ -62,6 +62,20 @@ def generate_launch_description():
         }.items(),
     )
 
+    # File with twist_mux params
+    twist_mux_params = os.path.join(
+        get_package_share_directory("scout_description"), "config", "twist_mux.yaml"
+    )
+    
+    # Add the twist_mux node
+    twist_mux_node = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        output="screen",
+        remappings={("/cmd_vel_out", "cmd_vel")},
+        parameters=[twist_mux_params],
+    )
+
     return LaunchDescription([
         use_sim_time_arg,
         port_name_arg,        
@@ -73,5 +87,6 @@ def generate_launch_description():
         simulated_robot_arg,
         sim_control_rate_arg,
         robot_state_publisher_cmd,
+        twist_mux_node,
         scout_base_node
     ])
