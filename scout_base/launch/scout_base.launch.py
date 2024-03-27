@@ -4,9 +4,10 @@ import launch_ros
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
@@ -49,6 +50,32 @@ def generate_launch_description():
                 'control_rate': launch.substitutions.LaunchConfiguration('control_rate'),
         }])
 
+    launch_file_dir = os.path.join(get_package_share_directory("scout_gazebo_sim"), "launch")
+
+    robot_state_publisher_cmd = IncludeLaunchDescription(
+        (
+            os.path.join(launch_file_dir, "scout_mini_robot_state_publisher.launch.py")
+        ),
+        launch_arguments={
+            "use_sim_time": launch.substitutions.LaunchConfiguration('use_sim_time'), 
+            "namespace": ""
+        }.items(),
+    )
+
+    # File with twist_mux params
+    twist_mux_params = os.path.join(
+        get_package_share_directory("scout_description"), "config", "twist_mux.yaml"
+    )
+    
+    # Add the twist_mux node
+    twist_mux_node = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        output="screen",
+        remappings={("/cmd_vel_out", "cmd_vel")},
+        parameters=[twist_mux_params],
+    )
+
     return LaunchDescription([
         use_sim_time_arg,
         port_name_arg,        
@@ -59,5 +86,7 @@ def generate_launch_description():
         is_omni_wheel_arg,
         simulated_robot_arg,
         sim_control_rate_arg,
+        robot_state_publisher_cmd,
+        twist_mux_node,
         scout_base_node
     ])
